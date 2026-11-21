@@ -6,11 +6,18 @@
 
 ## 安装
 
-1. 在 GitHub 仓库首页点击 **Code → Download ZIP**，然后解压。也可以使用本地克隆的仓库。
-2. 在 Chrome 地址栏打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择包含 `manifest.json` 的项目根目录。
+1. 在仓库首页的 **Releases（发行版）** 打开标有 **Latest** 的版本，点击 **下载最新版插件 ZIP**。也可以在同一页的 **Assets（附件）** 点击 `chaoxing-study-helper.zip`。下载后将 ZIP 解压到一个准备长期保留的文件夹。
+2. 在 Chrome 地址栏打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择刚才解压后包含 `manifest.json` 的文件夹。
 3. 打开已登录的超星课程页，点击扩展图标「超星学习通自动播放助手」。在同一个侧栏切换「自动播放」和「题目抓取」。
 
-更新时，在原目录替换文件或拉取新版本，再到扩展管理页点击该扩展的「重新加载」。
+更新时，下载最新版 ZIP，将文件解压覆盖到原安装目录，再到扩展管理页点击「重新加载」。
+
+<details>
+<summary>维护者如何发布新版本</summary>
+
+首次将本项目推送到 `main` 后，GitHub Actions 会读取 `manifest.json` 的版本号，创建对应的发行版并附上安装包。后续发布时，更新该版本号并推送即可。也可以在 **Actions → Publish extension ZIP → Run workflow** 选择 `main` 手动运行。每个发行页都提供一个始终指向最新安装包的下载链接，适合分享到其他平台。
+
+</details>
 
 ## 演示
 

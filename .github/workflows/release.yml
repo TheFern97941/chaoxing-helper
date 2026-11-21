@@ -1,0 +1,76 @@
+name: Publish extension ZIP
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - manifest.json
+      - .github/workflows/release.yml
+      - scripts/package-extension.sh
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: extension-release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Package and publish the manifest version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(jq -er '.version | select(test("^[0-9]+([.][0-9]+){0,3}$"))' manifest.json)
+          tag="v$version"
+          file=chaoxing-study-helper.zip
+          archive="$RUNNER_TEMP/$file"
+          url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/latest/download/$file"
+          info="$RUNNER_TEMP/release.json"
+
+          # On a retry, recover the asset using the original tag or draft commit.
+          source="$GITHUB_SHA"
+          existing=false
+          if gh release view "$tag" --json isDraft,targetCommitish,assets > "$info"; then
+            existing=true
+            source=$(jq -er '.targetCommitish' "$info")
+          fi
+          if git show-ref --verify --quiet "refs/tags/$tag"; then
+            source="refs/tags/$tag"
+          fi
+          test "$(git show "$source:manifest.json" | jq -er '.version')" = "$version"
+          bash scripts/package-extension.sh "$archive" "$source"
+
+          if [[ "$existing" == false ]]; then
+            notes="$RUNNER_TEMP/release-notes.md"
+            printf '%s\n\n%s\n' \
+              "[下载最新版插件 ZIP]($url)" \
+              '解压 ZIP，在 Chrome 的 chrome://extensions/ 开启开发者模式，选择「加载已解压的扩展程序」，打开包含 manifest.json 的文件夹。' > "$notes"
+            gh release create "$tag" "$archive" --target "$GITHUB_SHA" \
+              --title "超星学习通助手 $version" --notes-file "$notes"
+          else
+            if ! jq -e --arg file "$file" 'any(.assets[]; .name == $file and .state == "uploaded" and .size > 0)' "$info" > /dev/null; then
+              # Remove only a failed, incomplete upload when recovering a draft.
+              upload_args=("$tag" "$archive")
+              if jq -e --arg file "$file" '.isDraft and any(.assets[]; .name == $file)' "$info" > /dev/null; then
+                upload_args+=(--clobber)
+              fi
+              gh release upload "${upload_args[@]}"
+            fi
+            if jq -e '.isDraft' "$info" > /dev/null; then
+              gh release edit "$tag" --draft=false
+            fi
+          fi
+          printf '[下载最新版插件 ZIP](%s)\n' "$url" >> "$GITHUB_STEP_SUMMARY"
