@@ -6,7 +6,7 @@
 
 ## 安装
 
-1. 在仓库首页的 **Releases（发行版）** 打开标有 **Latest** 的版本，点击 **下载最新版插件 ZIP**。也可以在同一页的 **Assets（附件）** 点击 `chaoxing-study-helper.zip`。下载后将 ZIP 解压到一个准备长期保留的文件夹。
+1. **[下载最新版插件 ZIP](https://github.com/TheFern97941/chaoxing-helper/releases/latest/download/chaoxing-study-helper.zip)**，然后解压到一个准备长期保留的文件夹。也可以在[发行版列表](https://github.com/TheFern97941/chaoxing-helper/releases)下载指定版本。
 2. 在 Chrome 地址栏打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择刚才解压后包含 `manifest.json` 的文件夹。
 3. 打开已登录的超星课程页，点击扩展图标「超星学习通自动播放助手」。在同一个侧栏切换「自动播放」和「题目抓取」。
 
