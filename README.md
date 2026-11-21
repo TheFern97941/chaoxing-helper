@@ -21,12 +21,26 @@
 
 ## 演示
 
+### 自动播放与课时切换（12 秒）
+
+点击播放，观察课时序号如何随播放队列向后递增。这段录屏来自早期版本。
+
+https://github.com/user-attachments/assets/da19a0be-b0cd-4c4c-8978-8fb96df57837
+
+### 题目抓取（5 秒）
+
+录屏展示逐题读取时的进度。完成后，点击侧栏的「复制 JSON」即可复制结果。
+
+https://github.com/user-attachments/assets/1f12475b-146f-498b-b6f2-8501b410b89a
+
+<details>
+<summary>查看播放日志和抓取完成后的界面截图</summary>
+
 | 课程播放与课时切换 | 题目抓取与复制 |
 | --- | --- |
 | <img src="docs/media/playback.png" alt="播放侧栏显示当前课时、停止按钮和逐课时运行日志" width="280"> | <img src="docs/media/question-capture.png" alt="题目抓取完成，侧栏显示总数和复制 JSON 按钮" width="280"> |
-| [观看自动切换课时（MP4，12 秒）](docs/media/playback.mp4) | [观看逐题抓取进度（MP4，5 秒）](docs/media/question-capture.mp4) |
 
-左侧是早期版本的播放界面，录屏可以看到课时序号自动递增。右侧录屏展示抓取进度，截图展示完成后的「复制 JSON」按钮。当前版本把两项功能放在同一侧栏的两个标签中。
+</details>
 
 ## 自动播放
 
