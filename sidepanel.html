@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>超星学习助手</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #141b2d;
+      --border: #1e293b;
+      --primary: #6366f1;
+      --primary-hover: #818cf8;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      line-height: 1.5;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #6366f1, #38bdf8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .header .version {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .status-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .status-box.running {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    .status-box.error {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .status-box.running .status-dot {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse 1.5s infinite;
+    }
+
+    .status-box.error .status-dot {
+      background: var(--danger);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .option-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .option-label {
+      font-size: 13px;
+    }
+
+    .option-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Toggle switch */
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #334155;
+      border-radius: 22px;
+      transition: 0.25s;
+    }
+
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.25s;
+    }
+
+    input:checked + .slider {
+      background: var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+
+    input:focus-visible + .slider {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    #startBtn {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: white;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+
+    #startBtn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+    }
+
+    #startBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    #stopBtn {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    #stopBtn:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    #stopBtn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .log-box {
+      background: #0a0e17;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      height: 220px;
+      overflow-y: auto;
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .log-box .log-line {
+      margin-bottom: 2px;
+      word-break: break-all;
+    }
+
+    .log-box .log-success { color: #4ade80; }
+    .log-box .log-error { color: #f87171; }
+    .log-box .log-info { color: #38bdf8; }
+    .log-box .log-warn { color: #fbbf24; }
+
+    .tip {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(56, 189, 248, 0.06);
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.12);
+    }
+
+    .tip strong {
+      color: var(--accent);
+    }
+
+    .current-url {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0.8;
+    }
+
+    [hidden] { display: none !important; }
+
+    .feature-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .feature-tabs button {
+      padding: 8px 4px;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .feature-tabs button[aria-selected="true"] {
+      background: var(--card);
+      color: var(--text);
+    }
+
+    button:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .question-actions { margin-top: 14px; }
+    .question-actions button { min-width: 0; }
+    #collectQuestionsBtn { background: var(--primary); color: white; }
+    #cancelQuestionsBtn, #copyQuestionsBtn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .question-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+    #questionsSource { overflow-wrap: anywhere; margin-top: 8px; }
+    #questionsCopyStatus { margin-top: 8px; }
+    #questionsCopyStatus:empty { margin: 0; }
+    #questionsJson { width: 100%; margin-top: 8px; resize: vertical; color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div>
+      <h1>超星学习助手</h1>
+      <div id="version" class="version"></div>
+    </div>
+  </div>
+
+  <div class="feature-tabs" role="tablist" aria-label="助手功能">
+    <button type="button" id="playbackTab" role="tab" aria-controls="playbackPanel" aria-selected="true">自动播放</button>
+    <button type="button" id="questionsTab" role="tab" aria-controls="questionsPanel" aria-selected="false" tabindex="-1">题目抓取</button>
+  </div>
+
+  <section id="playbackPanel" role="tabpanel" aria-labelledby="playbackTab">
+  <div class="card">
+    <div class="card-title">状态</div>
+    <div id="statusBox" class="status-box">
+      <div class="status-dot"></div>
+      <span id="statusText">等待连接页面...</span>
+    </div>
+    <div id="currentUrl" class="current-url"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">设置</div>
+    <div class="option-row">
+      <div>
+        <div class="option-label">仅未完成章节</div>
+        <div class="option-desc">只处理带有任务点的未完成小节</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="onlyIncomplete" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <label class="option-row" for="startFromCurrent">
+      <span class="option-label">从当前选中课时开始</span>
+      <span class="switch">
+        <input type="checkbox" id="startFromCurrent">
+        <span class="slider"></span>
+      </span>
+    </label>
+  </div>
+
+  <div class="btn-group">
+    <button id="startBtn" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      开始播放
+    </button>
+    <button id="stopBtn" disabled>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+      停止
+    </button>
+  </div>
+
+  <div class="card" style="margin-top: 14px;">
+    <div class="card-title">运行日志</div>
+    <div id="logBox" class="log-box">
+      <div class="log-line log-info">等待启动...</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>使用提示</strong><br>
+    1. 左侧打开超星课程「章节」页面<br>
+    2. 点击上方「开始播放」<br>
+    3. 本侧边栏会实时显示进度<br>
+    4. 切换标签页后，侧边栏显示当前标签页的状态
+  </div>
+  </section>
+
+  <section id="questionsPanel" role="tabpanel" aria-labelledby="questionsTab" hidden>
+    <div class="card">
+      <div class="card-title">抓取进度</div>
+      <div id="questionsStatusBox" class="status-box">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="questionsStatus" role="status">请打开超星题目页，然后开始抓取。</span>
+      </div>
+      <div id="questionsSource" class="option-desc" hidden></div>
+      <div class="btn-group question-actions">
+        <button id="collectQuestionsBtn" type="button">开始抓取</button>
+        <button id="cancelQuestionsBtn" type="button" hidden>停止抓取</button>
+        <button id="copyQuestionsBtn" type="button" disabled>复制 JSON</button>
+      </div>
+      <div id="questionsCopyStatus" class="option-desc" role="status"></div>
+      <textarea id="questionsJson" class="log-box" aria-label="题目 JSON" readonly hidden></textarea>
+    </div>
+  </section>
+
+  <script src="sidepanel.js"></script>
+  <script src="questions.js"></script>
+  <script src="questions-panel.js"></script>
+</body>
+</html>

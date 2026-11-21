@@ -1,0 +1,13 @@
+.DS_Store
+.idea/
+.vscode/
+.env
+.env.*
+*.mov
+*.zip
+*.crx
+*.pem
+截屏*
+录屏*
+Screenshot*
+Screen Recording*
